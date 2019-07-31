@@ -7,7 +7,7 @@ import kotlin.random.Random
 object AnimalRelationships {
     private const val loseFriendshipChance = 50;
     private fun randomBreakFriendship(animal: Animal): Animal? {
-        if (Random.nextInt(99) < loseFriendshipChance)
+        if ((Random.nextInt(99) < loseFriendshipChance) || animal.friends.isEmpty())
             return null
         val exFriendIndex = Random.nextInt(animal.friends.count())
         val exFriend = animal.friends[exFriendIndex]
@@ -18,6 +18,8 @@ object AnimalRelationships {
     }
     private fun randomMakeFriendship(animal: Animal, allAnimals: Array<Animal>): Animal?
     {
+        if (allAnimals.isEmpty())
+            return null
         val newFriendIndex = Random.nextInt(allAnimals.size - 1)
         val newFriend = allAnimals[newFriendIndex]
         return if (animal.makeFriendship(newFriend))
@@ -26,7 +28,6 @@ object AnimalRelationships {
             null
     }
     fun liveOneDay(sourceAnimals: IAnimalSet) {
-        println("A new living day is starting...")
         val localAnimalsArray = sourceAnimals.toArray()
         for (animal in localAnimalsArray) {
             val exFriend = randomBreakFriendship(animal)
@@ -39,8 +40,7 @@ object AnimalRelationships {
             if (exFriend !== null)
                 println("${animal.name} and ${exFriend.name} are no longer friends.")
             if (newFriend !== null)
-                println("${animal.name} and ${newFriend.name} are no longer friends.")
+                println("${animal.name} and ${newFriend.name} become friends, that's great!")
         }
-        println("Living day relationships change finished.\r\n")
     }
 }

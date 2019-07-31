@@ -5,16 +5,14 @@ import java.lang.StringBuilder
 interface IAnimalSet : Iterable<Animal> {
     operator fun get(index: Int): Animal
     fun toArray(): Array<Animal>
+    fun isEmpty(): Boolean
 }
 
 abstract class AnimalsSet : HashSet<Animal>(), IAnimalSet {
     override operator fun get(index: Int): Animal =
         (super.toArray()[index] as Animal)
-    override fun toArray(): Array<Animal> {
-        var result: Array<Animal> = emptyArray()
-        super.toArray<Animal>(result)
-        return result
-    }
+    override fun toArray(): Array<Animal> =
+        super.toArray<Animal>(emptyArray())
 }
 
 private class AnimalFriends : AnimalsSet() {
@@ -48,13 +46,15 @@ abstract class Animal(
     override fun equals(other: Any?): Boolean =
         (this === other) || (this.hashCode() == other?.hashCode())
 
+    protected open fun getClassDescription() = this.javaClass.simpleName
+
     override fun toString(): String =
-        "${this.name} is a ${this.javaClass.name}, its favorite phrase is \"${this.favoritePhrase}\""
+        "${this.name} is a ${this.getClassDescription()}, its favorite phrase is \"${this.favoritePhrase}\""
 
     open fun isSocialWith(other: Animal): Boolean = true
 
     fun makeFriendship(friend: Animal): Boolean =
-        (friend != this) && (friend.isSocialWith(this)) && _friends.add(friend)
+        (friend != this) && (this.isSocialWith(friend)) && (friend.isSocialWith(this)) && _friends.add(friend)
 
     fun breakFriendship(friend: Animal): Boolean =
         _friends.remove(friend)

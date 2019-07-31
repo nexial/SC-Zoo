@@ -1,5 +1,0 @@
-package scZoo
-
-fun main() {
-
-}
